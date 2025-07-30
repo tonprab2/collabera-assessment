@@ -1,0 +1,146 @@
+{
+	"info": {
+		"_postman_id": "f2120217-414f-4bc9-9152-b189c83cf688",
+		"name": "Collabera Assessment Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47205184",
+		"_collection_link": "https://docking-module-explorer-70372196-9572661.postman.co/workspace/toni-testlapan's-Workspace~00b80c9b-94e2-4621-8956-4512ffb558e8/collection/47205184-f2120217-414f-4bc9-9152-b189c83cf688?action=share&source=collection_link&creator=47205184"
+	},
+	"item": [
+		{
+			"name": "Scenario 2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Verify status for first entry is only either \"active\" or \"inactive\"",
+							"",
+							"pm.test(\"Validate 1st entry status\", function () {",
+							"    const responseGet = pm.response.json();",
+							"",
+							"    pm.expect(responseGet[0]).to.have.property(\"status\");",
+							"    pm.expect(responseGet[0].status).to.be.oneOf([\"active\", \"inactive\"]);",
+							"",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://gorest.co.in/public/v2/users",
+					"protocol": "https",
+					"host": [
+						"gorest",
+						"co",
+						"in"
+					],
+					"path": [
+						"public",
+						"v2",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Scenario 1",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// email & name",
+							"const timestamp = Date.now();",
+							"",
+							"const name= `name_${timestamp}`;",
+							"const email= `email_${timestamp}@gmail.com`;",
+							"",
+							"pm.environment.set(\"generated_name\", name);",
+							"pm.environment.set(\"generated_email\", email);",
+							"",
+							"// status",
+							"const status = [\"active\", \"inactive\"];",
+							"const randomStatus = status[Math.floor(Math.random() * status.length)];",
+							"",
+							"pm.environment.set(\"random_status\", randomStatus);",
+							"",
+							"// gender",
+							"const gender = [\"male\", \"female\"];",
+							"const randomGender = gender[Math.floor(Math.random() * gender.length)];",
+							"",
+							"pm.environment.set(\"random_gender\", randomGender);",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Create a new employee entry with Name, Gender, Email and Status (active or inactive)",
+							"// Verify id returned is in numerical format",
+							"",
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);",
+							"});",
+							"",
+							"pm.test(\"ID is in number\", function () {",
+							"    const responsePost = pm.response.json();",
+							"",
+							"    pm.expect(responsePost).to.have.property(\"id\");",
+							"    pm.expect(responsePost.id).to.be.a('number');",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer df5332adf1ddf09ada44c7c5e6f5180d2caf248d42b8914a57a73078787d8b47",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"{{generated_email}}\",\n    \"name\": \"{{generated_name}}\",\n    \"gender\": \"{{random_gender}}\",\n    \"status\": \"{{random_status}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://gorest.co.in/public/v2/users",
+					"protocol": "https",
+					"host": [
+						"gorest",
+						"co",
+						"in"
+					],
+					"path": [
+						"public",
+						"v2",
+						"users"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
